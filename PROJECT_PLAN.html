@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bitcoin Quantum Readiness — Project Plan v1.1</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
+
+  :root {
+    --orange: #f7931a;
+    --dark: #080808;
+    --surface: #0f0f0f;
+    --surface2: #171717;
+    --border: #242424;
+    --text: #e4e4e4;
+    --muted: #777;
+    --green: #22c55e;
+    --red: #ef4444;
+    --yellow: #eab308;
+    --blue: #3b82f6;
+    --dim: #444;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--dark);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 14px;
+    line-height: 1.7;
+    padding: 48px 24px 100px;
+  }
+
+  .container { max-width: 900px; margin: 0 auto; }
+
+  header {
+    border-bottom: 1px solid var(--orange);
+    padding-bottom: 28px;
+    margin-bottom: 48px;
+  }
+
+  .stamp {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--orange);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  h1 {
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 1.2;
+    margin-bottom: 10px;
+    letter-spacing: -0.02em;
+  }
+
+  .meta {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+
+  .meta span { color: var(--text); }
+
+  section { margin-bottom: 52px; }
+
+  h2 {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  h2::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  h3 {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 18px 22px;
+    margin-bottom: 10px;
+  }
+
+  .card p { color: #bbb; font-size: 13px; line-height: 1.7; }
+  .card p + p { margin-top: 8px; }
+
+  .rule-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--orange);
+    border-radius: 4px;
+    padding: 14px 18px;
+    margin-bottom: 8px;
+  }
+
+  .rule-block .rule-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--orange);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    display: block;
+  }
+
+  .rule-block p { font-size: 13px; color: #bbb; line-height: 1.65; }
+
+  .phase {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+
+  .phase-header {
+    background: var(--surface2);
+    padding: 12px 18px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+
+  .phase-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--orange);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .phase-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .phase-who {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--blue);
+    margin-left: auto;
+    white-space: nowrap;
+  }
+
+  .phase-body { padding: 14px 18px; }
+  .phase-body p { font-size: 13px; color: #bbb; line-height: 1.65; margin-bottom: 8px; }
+  .phase-body p:last-child { margin-bottom: 0; }
+
+  .phase-note {
+    background: rgba(234,179,8,0.06);
+    border: 1px solid rgba(234,179,8,0.2);
+    border-radius: 3px;
+    padding: 10px 14px;
+    margin-top: 10px;
+    font-size: 12px;
+    color: #c9a800;
+    line-height: 1.6;
+  }
+
+  .phase-warn {
+    background: rgba(239,68,68,0.06);
+    border: 1px solid rgba(239,68,68,0.2);
+    border-radius: 3px;
+    padding: 10px 14px;
+    margin-top: 10px;
+    font-size: 12px;
+    color: #f87171;
+    line-height: 1.6;
+  }
+
+  code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 2px 6px;
+    border-radius: 3px;
+    color: #86efac;
+  }
+
+  pre {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    background: #050505;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 14px 18px;
+    color: #86efac;
+    line-height: 1.7;
+    overflow-x: auto;
+    white-space: pre;
+    margin: 10px 0;
+  }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  @media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } }
+
+  .repo-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px 20px;
+  }
+
+  .repo-card.private { border-left: 3px solid var(--red); }
+  .repo-card.public { border-left: 3px solid var(--green); }
+
+  .repo-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  .repo-card.private .repo-label { color: #fca5a5; }
+  .repo-card.public .repo-label { color: #86efac; }
+
+  .repo-name {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+
+  .repo-card p { font-size: 12px; color: #bbb; line-height: 1.6; }
+
+  .template-block {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    background: #050505;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 14px 18px;
+    color: #bbb;
+    line-height: 1.75;
+    overflow-x: auto;
+    white-space: pre;
+    margin: 10px 0;
+  }
+
+  .template-block .head { color: var(--orange); font-weight: 600; }
+  .template-block .key { color: #86efac; }
+  .template-block .val { color: #bbb; }
+  .template-block .comment { color: var(--muted); font-style: italic; }
+
+  .da-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--red);
+    border-radius: 4px;
+    padding: 14px 18px;
+    margin-bottom: 8px;
+  }
+
+  .da-block .da-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--red);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    display: block;
+  }
+
+  .da-block .da-title {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #fca5a5;
+  }
+
+  .da-block p { font-size: 13px; color: #bbb; line-height: 1.65; }
+  .da-block p + p { margin-top: 6px; }
+
+  .da-block .resolution {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: #86efac;
+    line-height: 1.6;
+  }
+
+  .firewall {
+    background: rgba(239,68,68,0.05);
+    border: 1px solid rgba(239,68,68,0.2);
+    border-radius: 4px;
+    padding: 14px 18px;
+    margin: 10px 0;
+  }
+
+  .firewall p { font-size: 13px; color: #fca5a5; line-height: 1.65; }
+
+  .tip {
+    background: rgba(34,197,94,0.05);
+    border: 1px solid rgba(34,197,94,0.2);
+    border-radius: 4px;
+    padding: 14px 18px;
+    margin: 10px 0;
+  }
+
+  .tip p { font-size: 13px; color: #86efac; line-height: 1.65; }
+
+  .json-data {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    background: #050505;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 14px 18px;
+    color: #86efac;
+    line-height: 1.7;
+    overflow-x: auto;
+    white-space: pre;
+    margin: 10px 0;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    margin: 10px 0;
+  }
+
+  th {
+    background: var(--surface2);
+    color: var(--orange);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+
+  td {
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--border);
+    color: #bbb;
+    vertical-align: top;
+  }
+
+  tr:last-child td { border-bottom: none; }
+
+  .changelog {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--blue);
+    border-radius: 4px;
+    padding: 14px 18px;
+    font-size: 12px;
+    color: #bbb;
+    line-height: 1.7;
+  }
+
+  .changelog strong { color: var(--blue); }
+  .changelog ul { list-style: none; margin-top: 6px; }
+  .changelog li { padding-left: 14px; position: relative; margin-bottom: 3px; }
+  .changelog li::before { content: '→'; position: absolute; left: 0; color: var(--orange); }
+
+  .closer {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--dim);
+    text-align: center;
+    margin-top: 60px;
+    letter-spacing: 0.15em;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div class="stamp">⚡ Project Plan — Dispatch Document · v1.1</div>
+    <h1>Bitcoin Quantum Readiness Reference</h1>
+    <div class="meta">
+      <div>Plan version: <span>v1.1 — 2026-04-18</span></div>
+      <div>Domain: <span>quantum.bitcoinbutlers.com</span></div>
+      <div>Maintainer: <span>Bitcoin Butlers</span></div>
+      <div>Status: <span>Private — Strategy proof of concept</span></div>
+      <div>llm-wiki target version: <span>v0.3.0</span></div>
+      <div>Community outreach: <span>Deferred until Strategy outcome or 2026-06-01, whichever first</span></div>
+      <div>NVK contact: <span>Deferred until Strategy outcome or 2026-06-01, whichever first</span></div>
+      <div>Agent works from: <span>This plan version only. If revised, re-dispatch.</span></div>
+    </div>
+  </header>
+
+  <!-- ARCHITECTURE -->
+  <section>
+    <h2>Two-Repo Architecture</h2>
+
+    <div class="two-col">
+      <div class="repo-card private">
+        <span class="repo-label">Private — never published</span>
+        <div class="repo-name">btc-quantum-wiki</div>
+        <p>llm-wiki v0.3.0 instance (MIT licensed, NVK's tool). All source documents ingested here. Compiled knowledge base. You query this when writing artifacts. The engine room.</p>
+      </div>
+      <div class="repo-card public">
+        <span class="repo-label">Public — GitHub Pages</span>
+        <div class="repo-name">btc-quantum-readiness</div>
+        <p>Public-facing site at quantum.bitcoinbutlers.com. All artifacts, thesis, explainers. Version history via Git. PRs accepted at maintainer's discretion. The public face.</p>
+      </div>
+    </div>
+
+    <div class="firewall">
+      <p><strong>FIREWALL RULE:</strong> The coding agent has write access to the public repo only. The private wiki is read-only for reference. These repos are never merged. Content derived from the private wiki is rewritten in the maintainer's voice for the public repo — wiki output is not copied directly into public files under any circumstances.</p>
+    </div>
+  </section>
+
+  <!-- GOVERNING RULES -->
+  <section>
+    <h2>Governing Rules — Non-Negotiable</h2>
+
+    <div class="rule-block">
+      <span class="rule-num">Rule 1 — No shortcuts</span>
+      <p>Every claim in every public artifact traces to a primary source verified directly. No citing secondary coverage as the source. If the primary source cannot be found and verified, the claim does not appear. No exceptions without explicit maintainer approval.</p>
+    </div>
+
+    <div class="rule-block">
+      <span class="rule-num">Rule 2 — Translation without condescension</span>
+      <p>Written for a CFO who has never read a BIP and a retail holder who has never read a cryptography paper. Plain language first. Technical terms defined inline on first use. Succinct, not comprehensive. If a sentence requires a cryptography background to parse, rewrite it.</p>
+    </div>
+
+    <div class="rule-block">
+      <span class="rule-num">Rule 3 — Maintainer is the arbiter</span>
+      <p>PRs are welcome. The maintainer accepts, rejects, or modifies at their discretion. No formal process, no timelines. Version history is public. Contributors who disagree with editorial decisions can fork.</p>
+    </div>
+
+    <div class="rule-block">
+      <span class="rule-num">Rule 4 — Opinions diverge here explicitly</span>
+      <p>Where this project's position diverges from NVK's or other researchers, both positions are stated with attribution. Neither is suppressed. The divergence is part of the value.</p>
+    </div>
+
+    <div class="rule-block">
+      <span class="rule-num">Rule 5 — Animations deferred</span>
+      <p>No animation work until core documents and thesis are complete, accurate, and reviewed by the maintainer. Animations serve translation — not decoration.</p>
+    </div>
+
+    <div class="rule-block">
+      <span class="rule-num">Rule 6 — Funding has no editorial rights</span>
+      <p>Sponsors acknowledged in README. No special treatment in how their work is characterised. If their paper scores low in the maintainer's private assessment, the public artifact reflects that honestly.</p>
+    </div>
+
+    <div class="rule-block">
+      <span class="rule-num">Rule 7 — Private until Strategy outcome or deadline</span>
+      <p>No community outreach, no Delving Bitcoin submission, no contact with NVK, no HRF approach until Strategy has reviewed the direction OR 2026-06-01, whichever comes first. This project has independent standalone value — if Strategy declines the role, it launches on the deadline regardless. The gate is the Strategy process window, not a permanent veto.</p>
+    </div>
+  </section>
+
+  <!-- PUBLIC REPO STRUCTURE -->
+  <section>
+    <h2>Public Repo Structure</h2>
+<pre>/
+├── README.md
+├── CONTRIBUTING.md
+├── CLAUDE.md
+├── PROJECT_PLAN.html        ← this document, pinned in repo for agent reference
+├── _config.yml
+├── index.html
+├── thesis.md
+├── /bips
+│   ├── bip-360.md
+│   └── bip-361.md
+├── /papers
+│   ├── google-march-2026.md
+│   ├── presidio-april-2026.md
+│   ├── starkware-qsb.md
+│   ├── chaincode-post-quantum.md
+│   └── blockstream-quantum.md
+├── /explainers
+│   ├── threat-plain-language.md
+│   └── address-exposure.md
+├── /data
+│   └── hardware-timeline.json
+└── /assets
+    ├── /css
+    └── /js</pre>
+
+    <div class="card">
+      <h3>hardware-timeline.json — verified data points only</h3>
+      <p>These exact data points, these exact sources. No projections without a cited primary source. No ranges collapsed into single numbers. Every URL below is subject to Phase 0 pre-flight validation.</p>
+    </div>
+<div class="json-data">{
+  "data_points": [
+    {
+      "label": "Google Sycamore",
+      "year": 2019,
+      "physical_qubits": 53,
+      "logical_qubits": null,
+      "source": "https://www.nature.com/articles/s41586-019-1666-5"
+    },
+    {
+      "label": "IBM Condor",
+      "year": 2023,
+      "physical_qubits": 1121,
+      "logical_qubits": null,
+      "source": "https://www.ibm.com/quantum/blog/quantum-roadmap-2033",
+      "note": "Largest physical-qubit count achieved at time of announcement"
+    },
+    {
+      "label": "Google Willow",
+      "year": 2024,
+      "physical_qubits": 105,
+      "logical_qubits": "~100",
+      "source": "https://blog.google/technology/research/google-willow-quantum-chip/"
+    },
+    {
+      "label": "IBM Starling (roadmap target)",
+      "year": 2029,
+      "physical_qubits": null,
+      "logical_qubits": 200,
+      "source": "https://www.ibm.com/quantum/roadmap",
+      "note": "Roadmap target — not achieved"
+    }
+  ],
+  "attack_threshold": {
+    "lower_bound_logical": 523,
+    "lower_source": "https://www.preprints.org/manuscript/202509.2079/v1/download",
+    "google_2026_estimate_physical": 500000,
+    "google_2026_source": "https://arxiv.org/abs/2603.28846",
+    "note": "Attack threshold estimates in the published literature span from ~523 logical qubits (lower-bound academic estimate) to multiple thousands depending on error correction overhead and signature scheme assumptions. The Google 2026 physical-qubit estimate of ~500,000 is the more concrete anchor. Range is intentional — do not collapse to a single number. Upper bound is not pinned to a single source to avoid citing secondary coverage."
+  }
+}</div>
+  </section>
+
+  <!-- DOCUMENT TEMPLATE -->
+  <section>
+    <h2>Document Artifact Template</h2>
+    <div class="card">
+      <p>Every public document follows this structure exactly. Query the private wiki before writing each section. Verify every claim against its primary source directly — not against the wiki's synthesis.</p>
+    </div>
+<div class="template-block"><span class="head">## [Full Title]</span>
+
+<span class="key">**Authors:**</span> <span class="val">[Name (Affiliation) · Name (Affiliation)]</span>
+<span class="key">**Published:**</span> <span class="val">[Date]</span>
+<span class="key">**Type:**</span> <span class="val">[BIP / Academic Paper / Industry Analysis]</span>
+<span class="key">**Status:**</span> <span class="val">[Draft / Active / Superseded]</span>
+<span class="key">**Primary source:**</span> <span class="val">[Direct URL — verified, not secondary coverage]</span>
+
+---
+
+<span class="head">### What this is</span>
+<span class="comment">[2–3 sentences. Plain language. What problem does this address
+and why does it matter to someone who holds Bitcoin?
+No jargon without inline definition. Written for a CFO or retail holder.]</span>
+
+<span class="head">### The core argument</span>
+<span class="comment">[Accurate technical summary. No editorialising.
+Contested claims noted as contested.]</span>
+
+<span class="head">### Key claims</span>
+<span class="comment">- [Claim] — [[Author, year](direct url)] (add secondary
+  corroborating primary source only if triangulation is needed)</span>
+
+<span class="head">### Where this project agrees</span>
+<span class="comment">[Alignment with our thesis — brief, specific]</span>
+
+<span class="head">### Where this project diverges</span>
+<span class="comment">[Where our editorial position differs — stated plainly, attributed.
+If no divergence, write: "No material divergence at this time."]</span>
+
+<span class="head">### Open questions</span>
+<span class="comment">[What this document explicitly does not resolve — honest gaps only]</span>
+
+<span class="head">### References</span>
+<span class="comment">[Primary sources only. No secondary coverage.]</span>
+
+---
+<span class="comment">*Last updated: [date] · [contributor]*
+*Corrections welcome via pull request.*</span></div>
+  </section>
+
+  <!-- THESIS STRUCTURE -->
+  <section>
+    <h2>Thesis Structure</h2>
+    <div class="card">
+      <p>Sections 1–4 are neutral synthesis — open to correction via PR. Section 5 is the maintainer's editorial position — attributed, clearly labelled, raised as comments not PRs. A rough notes file for section 5 must be started in Phase 0 and updated throughout all phases. It is not written cold in Phase 4.</p>
+    </div>
+<div class="template-block"><span class="head"># Bitcoin Quantum Readiness — Working Thesis</span>
+
+<span class="comment">*Sections 1–4: neutral synthesis. Open to correction via PR.
+Section 5: editorial position of this project. Attributed.
+Where this project diverges from other researchers,
+both views are stated with attribution.*</span>
+
+---
+
+<span class="head">## 1. The Problem</span>
+What quantum computers can do to Bitcoin's signature scheme specifically.
+What they cannot do — SHA-256, proof of work, hashed addresses pre-spend.
+Primary source citations only. No secondary coverage as source.
+
+<span class="head">## 2. The Exposure</span>
+How much Bitcoin is actually at risk and why.
+Address type breakdown — P2PK, P2TR, reused addresses, hashed pre-spend.
+Harvest-now-crack-later as the near-term threat.
+Fast-clock architectures: even briefly exposed keys at risk.
+Verified numbers: Blockstream breakdown, Google 2026 paper, Presidio paper.
+ECDLP challenges paper (arxiv 2508.14011) cited as supporting reference
+for attack threshold claims.
+
+<span class="head">## 3. The Timeline</span>
+Verified hardware data points only — no projections without citation.
+Today: ~100 logical qubits.
+IBM Starling 2029 target: 200 logical (roadmap, not achieved).
+Attack threshold: lower bound ~523 logical qubits per cited academic estimate;
+upper bound not pinned to single source (literature ranges widely).
+Google 2026 ~500k physical qubits as concrete alternate anchor.
+Governance migration timeline against hardware timeline.
+Where those lines may cross — uncertainty bands explicit throughout.
+
+<span class="head">## 4. The Options — Comparatively Threat-Modelled</span>
+BIP-360: clean soft fork, new output type, no existing coins touched.
+BIP-361: hard-fork-like consequences despite soft fork structure.
+  — Phase A / B / C explained in plain language.
+  — Community opposition documented and attributed.
+QSB / Binohash: no-fork bridge, works today.
+  — Built by BIP-360's own co-author. This provenance matters.
+Blockstream / Liquid: SHRINCS / SHRIMPS in production.
+  — NIST ML-DSA and FALCON standardised August 2024.
+
+<span class="head">## 5. The Recommendation</span>
+<span class="comment">*Editorial position of this project.
+Not the views of funders, contributors, or affiliated organisations.*</span>
+
+What institutions holding Bitcoin at scale should do now.
+What the governance conversation needs to look like.
+What the decision timeline genuinely is.
+Where this project diverges from other researchers — attributed, not suppressed.</div>
+  </section>
+
+  <!-- README AND CONTRIBUTING -->
+  <section>
+    <h2>README.md and CONTRIBUTING.md</h2>
+
+    <div class="card">
+      <h3>README.md — exact content</h3>
+    </div>
+<div class="template-block"><span class="head"># Bitcoin Quantum Readiness Reference</span>
+
+An institutionally-focused living reference for Bitcoin's quantum
+exposure — written for boards, CFOs, and retail holders who need
+to understand this without a cryptography background.
+
+<span class="head">## Built on primary sources</span>
+
+NVK's research series at bitcoinquantum.space is the most rigorous
+existing synthesis of this topic. This project cites his work as a
+primary source and is explicitly complementary to it — an institutional
+translation layer, not a competing research effort.
+
+This project uses NVK's llm-wiki tool (MIT licensed) as its
+internal research infrastructure.
+
+<span class="head">## Maintainer</span>
+Bitcoin Butlers. [Additional funders disclosed as confirmed.]
+
+<span class="head">## Funding</span>
+Funders have no editorial authority. Sponsoring this project does not
+confer pull request rights, preferential characterisation, or any
+influence over editorial decisions.
+
+<span class="head">## How this works</span>
+Living document. Updated as the field moves. PRs accepted at the
+maintainer's discretion — no formal process. Version history is
+public via Git. Where this project's editorial position diverges
+from other researchers, both views are stated with attribution.
+
+<span class="head">## What this is not</span>
+Not a lobbying document. Not produced by or for any specific institution.
+Section 5 of the thesis is editorial opinion, clearly labelled.
+The views in section 5 represent the author's independent editorial
+position and are not those of any employer, funder, or affiliated
+organisation.</div>
+
+    <div class="card" style="margin-top: 10px;">
+      <h3>CONTRIBUTING.md — exact content</h3>
+    </div>
+<div class="template-block"><span class="head"># Contributing</span>
+
+Pull requests for factual corrections supported by citations
+to primary sources are welcome.
+
+The maintainer accepts, modifies, or rejects at their discretion.
+This is not a democratic process.
+If you disagree with an editorial decision, you are welcome to fork.
+
+Corrections to sections 1–4: cite your primary source in the PR.
+Disagreements with section 5 (editorial): raise as a PR comment.
+The maintainer will consider and may update with attribution.
+
+No formal dispute process. No timelines.</div>
+  </section>
+
+  <!-- BUILD SEQUENCE -->
+  <section>
+    <h2>Build Sequence</h2>
+
+    <div class="phase">
+      <div class="phase-header">
+        <span class="phase-num">Phase 0</span>
+        <span class="phase-title">Private Wiki Setup — Human Only, Before Agent Touches Anything</span>
+        <span class="phase-who">HUMAN · Claude Code</span>
+      </div>
+      <div class="phase-body">
+        <p>This phase is executed by the maintainer in Claude Code. The coding agent does not start until Phase 0 is complete and the private wiki is queryable. The coding agent has no access to the private repo.</p>
+
+        <p><strong>Step 0.1 — Install llm-wiki v0.3.0.</strong> Verify the current install command against the README at <code>github.com/nvk/llm-wiki</code> before executing — the install path has evolved past the original <code>/install-plugin</code> syntax. Likely current path:</p>
+<pre># In Claude Code — public marketplace install
+/plugin marketplace add nvk/llm-wiki
+/plugin install wiki@llm-wiki
+
+# Fallback if marketplace install fails — manual sync
+git clone https://github.com/nvk/llm-wiki.git ~/llm-wiki
+cd ~/llm-wiki && git checkout v0.3.0  # pin version
+
+# Verify install
+/wiki status</pre>
+        <div class="phase-warn">Confirm <code>/wiki status</code> reports v0.3.0 before proceeding. Note: <code>/wiki:thesis</code> does not exist in v0.3.0 — it was folded into <code>/wiki:research --mode thesis</code>. Do not use <code>/wiki:thesis</code> anywhere in this build.</div>
+
+        <p><strong>Step 0.2 — Initialise the wiki.</strong></p>
+<pre>/wiki init</pre>
+
+        <p><strong>Step 0.3 — URL pre-flight validation.</strong> Every URL in the ingest list below must return HTTP 200 before <code>/wiki:ingest</code> runs. This is a blocker — if any URL 404s, stop, resolve the URL, and update this plan to v1.2 before re-dispatching. Do not skip a URL and continue.</p>
+<pre># Pre-flight script — run before any ingest
+for url in \
+  "https://github.com/bitcoin/bips/blob/master/bip-0360.mediawiki" \
+  "https://github.com/bitcoin/bips/blob/master/bip-0361.mediawiki" \
+  "https://arxiv.org/abs/2603.28846" \
+  "https://github.com/presidiobtc/bitcoin-quantum/blob/main/presidio-bitcoin-quantum-readiness-v1-apr-2026.pdf" \
+  "https://chaincode.com/bitcoin-post-quantum.pdf" \
+  "https://arxiv.org/abs/2508.14011" \
+  "https://bitcoinquantum.space" \
+  "https://blockstream.com/quantum/" \
+  "https://bip360.org/" \
+  "https://news.bitcoin.com/no-consensus-changes-needed-starkware-cpo-builds-quantum-safe-bitcoin-transactions-from-existing-rules/"; do
+  status=$(curl -s -o /dev/null -w "%{http_code}" -L "$url")
+  echo "$status  $url"
+done
+# Every line must read 200. If any line is 404/403/5xx, stop.</pre>
+
+        <p><strong>Step 0.4 — Ingest in this exact order. Primary sources only.</strong> Run <code>/wiki:compile</code> and <code>/wiki:lint</code> after each batch.</p>
+<pre># BIPs — primary source
+/wiki:ingest https://github.com/bitcoin/bips/blob/master/bip-0360.mediawiki
+/wiki:ingest https://github.com/bitcoin/bips/blob/master/bip-0361.mediawiki
+
+# Academic papers — primary source
+/wiki:ingest https://arxiv.org/abs/2603.28846
+/wiki:ingest https://github.com/presidiobtc/bitcoin-quantum/blob/main/presidio-bitcoin-quantum-readiness-v1-apr-2026.pdf
+/wiki:ingest https://chaincode.com/bitcoin-post-quantum.pdf
+/wiki:ingest https://arxiv.org/abs/2508.14011   # ECDLP challenges paper — supporting reference only, no standalone artifact
+
+# Living documents — awareness and framing only (see notes below)
+/wiki:ingest https://bitcoinquantum.space
+/wiki:ingest https://blockstream.com/quantum/
+/wiki:ingest https://bip360.org/
+
+# Starkware QSB / Binohash — primary sources first, news as framing only
+# PRIMARY: locate and ingest Levy's paper directly. Check starkware.co and
+# github.com/starkware-industries for the canonical paper/repo before fallback.
+# Update this plan to v1.2 with the pinned URL once located.
+# FRAMING ONLY (do not cite as primary):
+/wiki:ingest https://news.bitcoin.com/no-consensus-changes-needed-starkware-cpo-builds-quantum-safe-bitcoin-transactions-from-existing-rules/</pre>
+        <div class="phase-note">⚠ NVK's bitcoinquantum.space is ingested for editorial awareness only. It is already a synthesis of primary sources. Any factual claim that originates from his synthesis must be verified against the original paper he references — not cited as if his summary is the primary source. The wiki will surface his framing; the maintainer must trace every claim back one level further. Same standard applies to the news.bitcoin.com Starkware coverage — framing only, not a citeable primary source.</div>
+
+        <p><strong>Step 0.5 — Start <code>section-5-notes.md</code> in the private repo.</strong> Record initial editorial instincts on the recommendation. Update this file at the end of every subsequent phase. Section 5 is not written cold in Phase 4.</p>
+
+        <p><strong>Step 0.6 — Wiki gate: three grounded test queries.</strong> Before declaring Phase 0 complete, run these three queries and confirm each returns a grounded answer with a primary source citation from the ingested corpus:</p>
+<pre># Query 1 — structural question (tests BIP ingest)
+/wiki:query "What are the three phases (A, B, C) defined in BIP-361 and what does each do?"
+# Expected: answer cites bip-0361.mediawiki directly.
+
+# Query 2 — numerical question (tests academic paper ingest)
+/wiki:query "What physical-qubit count does the Google 2026 paper estimate is needed to break ECDSA keys used in Bitcoin?"
+# Expected: answer cites arxiv.org/abs/2603.28846, figure around 500,000.
+
+# Query 3 — comparative question (tests cross-source synthesis)
+/wiki:query "What is the QSB / Binohash approach and how does it differ from BIP-360?"
+# Expected: answer distinguishes Starkware's no-fork approach from BIP-360's soft fork, cites primary sources for each, flags the shared authorship.</pre>
+        <div class="phase-warn">Do not proceed to Phase 1 until all three queries return grounded results with primary source citations. If any query hallucinates, returns ungrounded output, or cites the news.bitcoin.com article as primary, stop and debug the wiki before dispatching the coding agent.</div>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-header">
+        <span class="phase-num">Phase 1</span>
+        <span class="phase-title">Public Repo Infrastructure</span>
+        <span class="phase-who">CODING AGENT</span>
+      </div>
+      <div class="phase-body">
+        <p>Create the public GitHub repo under Bitcoin Butlers org. Configure GitHub Pages with Jekyll minimal theme. Set up CNAME for <code>quantum.bitcoinbutlers.com</code>. Write README.md and CONTRIBUTING.md using the exact content specified in this plan. Place this plan at the repo root as <code>PROJECT_PLAN.html</code> for reference. Place <code>CLAUDE.md</code> at the repo root with agent guardrails. Create <code>hardware-timeline.json</code> with the exact verified data points specified in this plan — no others, no invented entries. Confirm site renders at the subdomain before proceeding.</p>
+        <div class="phase-warn">The coding agent has write access to the public repo only. Do not create, modify, or read files in the private wiki repo. Do not add hardware data points beyond those specified.</div>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-header">
+        <span class="phase-num">Phase 2</span>
+        <span class="phase-title">First Two Artifacts — Credibility Standard</span>
+        <span class="phase-who">CODING AGENT + MAINTAINER REVIEW</span>
+      </div>
+      <div class="phase-body">
+        <p>BIP-360 artifact: verify every claim directly against the BIP source at <code>github.com/bitcoin/bips</code> and bip360.org. BIP-361 artifact: verify against the GitHub draft and attributed primary quotes only — no secondary media as source.</p>
+        <p>Each artifact follows the document template exactly. Maintainer reviews and approves each artifact before it is committed. Quality checks the maintainer applies: every claim has an inline primary-source citation; no unsourced adjectives or characterisations; no secondary coverage appears in References; the "What this is" section is parseable by a reader with no cryptography background. These two artifacts set the credibility standard for everything that follows.</p>
+        <div class="phase-note">Update section-5-notes.md at the end of this phase.</div>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-header">
+        <span class="phase-num">Phase 3</span>
+        <span class="phase-title">Remaining Paper Artifacts and Explainers</span>
+        <span class="phase-who">CODING AGENT + MAINTAINER REVIEW</span>
+      </div>
+      <div class="phase-body">
+        <p>Write artifacts for: Google March 2026 paper (arxiv.org primary), Presidio April 2026 paper (GitHub primary), Starkware QSB / Binohash (Levy's paper and Starkware GitHub as primary — news coverage is framing only), Chaincode post-quantum paper (chaincode.com direct), Blockstream quantum page (blockstream.com/quantum). Write two explainers: threat in plain language, address exposure explained.</p>
+        <p>Query the private wiki for each section before writing. Verify every claim against its primary source directly — not against the wiki synthesis. Each artifact reviewed by the maintainer before commit, applying the same quality checks from Phase 2.</p>
+        <div class="phase-note">Update section-5-notes.md at the end of this phase. By this point, the notes should reflect a substantive editorial position — not blank.</div>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-header">
+        <span class="phase-num">Phase 4</span>
+        <span class="phase-title">Thesis</span>
+        <span class="phase-who">CODING AGENT + MAINTAINER SIGN-OFF</span>
+      </div>
+      <div class="phase-body">
+        <p>Draft sections 1–4 using the wiki, verified against primary sources. Section 5 is drafted by the maintainer from the accumulated section-5-notes.md — it is not generated by the coding agent. The coding agent formats section 5 into the thesis document once the maintainer has provided the content. The thesis is committed only after the maintainer has explicitly signed off on section 5.</p>
+        <div class="phase-warn">The coding agent does not write section 5. It formats and commits the maintainer's content.</div>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-header">
+        <span class="phase-num">Phase 5</span>
+        <span class="phase-title">Landing Page</span>
+        <span class="phase-who">CODING AGENT</span>
+      </div>
+      <div class="phase-body">
+        <p>Build <code>index.html</code>: project description, thesis summary, document index. Clean, readable, no animations. Every technical term on the landing page has a plain language tooltip or inline definition. Mobile readable. The landing page is the first thing a CFO or retail holder sees — it must communicate the project's purpose without any Bitcoin-specific vocabulary.</p>
+        <div class="phase-note">If Jekyll minimal theme makes per-term tooltips cumbersome, the agent may propose a lightweight alternative (Eleventy, Astro) back to the maintainer with a migration plan. Default is Jekyll unless explicitly approved otherwise.</div>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-header">
+        <span class="phase-num">Phase 6</span>
+        <span class="phase-title">Strategy Presentation Checkpoint</span>
+        <span class="phase-who">HUMAN — MAINTAINER ONLY</span>
+      </div>
+      <div class="phase-body">
+        <p>All phases complete. Site live at <code>quantum.bitcoinbutlers.com</code>. All artifacts published. Thesis published. Repo clean. README and CONTRIBUTING complete. This is the version shown to the Strategy team as proof of concept. Do not publicise, contact NVK, approach HRF, or submit to Delving Bitcoin before this review — subject to the Rule 7 deadline of 2026-06-01.</p>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-header">
+        <span class="phase-num">Phase 7</span>
+        <span class="phase-title">Post Checkpoint — Public Launch</span>
+        <span class="phase-who">DEFERRED</span>
+      </div>
+      <div class="phase-body">
+        <p>Triggered by either (a) Strategy review feedback, or (b) the 2026-06-01 deadline, whichever first. Contact NVK about citation and potential collaboration. Submit to Delving Bitcoin. Post to Nostr. HRF funding approach. Build animations (qubit timeline, BTC exposure breakdown, BIP phase timeline, address reuse illustrative) if the translation mission has been validated by real reader feedback at that point.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- DEVIL'S ADVOCATE — RESOLVED -->
+  <section>
+    <h2>Devil's Advocate — All Points Resolved</h2>
+
+    <div class="da-block">
+      <span class="da-num">Point 1 — Resolved in v1.0</span>
+      <div class="da-title">Phase 0 depends on Claude Code — not available to coding agent</div>
+      <p>llm-wiki runs as a Claude Code plugin. The ingest commands are Claude Code slash commands, not bash commands. A coding agent without Claude Code cannot execute Phase 0.</p>
+      <div class="resolution">Resolution: Phase 0 is explicitly labelled as HUMAN · Claude Code. The coding agent starts at Phase 1 only after the maintainer confirms Phase 0 is complete and the wiki is queryable. The two phases are separated by an explicit checkpoint.</div>
+    </div>
+
+    <div class="da-block">
+      <span class="da-num">Point 2 — Resolved in v1.0</span>
+      <div class="da-title">No documented firewall between private and public repos</div>
+      <p>Without an explicit firewall, a coding agent handed both repos could accidentally commit wiki content to the public repo, contaminating the separation.</p>
+      <div class="resolution">Resolution: Firewall rule is stated at the top of the architecture section and in Phase 0. The coding agent has write access to the public repo only. The private wiki is read-only for reference. Wiki output is never copied directly to public files — it is rewritten in the maintainer's voice.</div>
+    </div>
+
+    <div class="da-block">
+      <span class="da-num">Point 3 — Resolved in v1.0</span>
+      <div class="da-title">Ingesting NVK's site creates a citation loop risk</div>
+      <p>NVK's bitcoinquantum.space synthesises primary sources — it is already secondary. Treating the wiki's synthesis of his synthesis as a source would remove the primary source layer entirely.</p>
+      <div class="resolution">Resolution: Explicit note in Phase 0 ingest instructions: bitcoinquantum.space is ingested for editorial awareness only. Every factual claim that originates from his synthesis must be verified one level further against the original paper he references. The wiki surfaces his framing; the maintainer traces every claim to its primary source.</div>
+    </div>
+
+    <div class="da-block">
+      <span class="da-num">Point 4 — Resolved in v1.0</span>
+      <div class="da-title">Section 5 written cold in Phase 4 risks disconnection from evidence</div>
+      <p>Starting section 5 only after all artifacts are done means the editorial position hasn't been shaping the work throughout — it gets bolted on at the end.</p>
+      <div class="resolution">Resolution: section-5-notes.md starts in Phase 0 and is updated at the end of every phase. By Phase 4, the notes reflect a substantive, evidence-grounded position. The coding agent does not write section 5 — it formats and commits the maintainer's content.</div>
+    </div>
+
+    <div class="da-block">
+      <span class="da-num">Point 5 — Resolved in v1.0</span>
+      <div class="da-title">hardware-timeline.json required decisions the plan hadn't made</div>
+      <p>A coding agent cannot determine which data points belong in the JSON or which sources to cite — it would have guessed or hallucinated.</p>
+      <div class="resolution">Resolution: The exact data points, exact values, and exact source URLs are specified in the plan above. The coding agent writes the JSON from the specification, not from its own knowledge.</div>
+    </div>
+
+    <div class="da-block">
+      <span class="da-num">Point 6 — Resolved in v1.1</span>
+      <div class="da-title">Medium blog post cited as primary source for the 2500-qubit attack threshold</div>
+      <p>A Medium post was cited as one of the two anchor sources for the attack threshold range. This violates Rule 1 (no secondary coverage as primary source). An agent following the spec would have shipped a rule violation on day one; an agent flagging it would have stalled Phase 1.</p>
+      <div class="resolution">Resolution: Medium source removed from hardware-timeline.json. Attack threshold now has a lower bound from the cited academic preprint and the Google 2026 physical-qubit estimate as the concrete alternate anchor. Upper bound in logical qubits is intentionally not pinned to a single source — the plan's note explains the literature range.</div>
+    </div>
+
+    <div class="da-block">
+      <span class="da-num">Point 7 — Resolved in v1.1</span>
+      <div class="da-title">Starkware QSB primary source was the news article, not the paper</div>
+      <p>The Document Index listed "news.bitcoin.com QSB article (Levy's paper)" — a contradiction. The news article is coverage; Levy's paper is the primary source. The agent would have had no canonical paper URL to verify against.</p>
+      <div class="resolution">Resolution: Phase 0 now instructs the maintainer to locate and pin Levy's paper and/or Starkware's canonical repo as the primary source before Phase 3. The news article is explicitly downgraded to framing-only status, alongside bitcoinquantum.space. Document Index updated accordingly.</div>
+    </div>
+
+    <div class="da-block">
+      <span class="da-num">Point 8 — Resolved in v1.1</span>
+      <div class="da-title">No URL pre-flight gate — ingest could fail silently mid-execution</div>
+      <p>If any ingest URL 404s, the original plan had no gate to catch it before commands ran. The maintainer could have ingested a partial corpus and proceeded to Phase 1 with a gap.</p>
+      <div class="resolution">Resolution: Step 0.3 adds an explicit pre-flight script that curls every URL and requires every status code to be 200 before ingest begins. If any URL fails, the plan is bumped to v1.2 with the updated URL before re-dispatch.</div>
+    </div>
+
+    <div class="da-block">
+      <span class="da-num">Point 9 — Resolved in v1.1</span>
+      <div class="da-title">arxiv 2508.14011 appeared in ingest list with no labelled role</div>
+      <p>A paper in the ingest list with no corresponding artifact in the Document Index would have left the agent uncertain whether to write about it or treat it as supporting material.</p>
+      <div class="resolution">Resolution: Paper labelled as "ECDLP challenges paper — supporting reference only, no standalone artifact" in the Phase 0 ingest list. Thesis section 2 cites it explicitly as supporting reference.</div>
+    </div>
+
+    <div class="da-block">
+      <span class="da-num">Point 10 — Resolved in v1.1</span>
+      <div class="da-title">No contingency if Strategy doesn't greenlight</div>
+      <p>Every Phase 7 activity was gated on a single external decision. If Strategy passed on the maintainer, the project had no fork — public launch could be deferred indefinitely.</p>
+      <div class="resolution">Resolution: Rule 7 now reads "until Strategy outcome OR 2026-06-01, whichever first." Project launches independently on the deadline regardless of Strategy outcome. The gate is the interview window, not a permanent veto.</div>
+    </div>
+
+    <div class="da-block">
+      <span class="da-num">Point 11 — Resolved in v1.1</span>
+      <div class="da-title">llm-wiki commands may have drifted from plan</div>
+      <p>NVK's tool is actively developed. The original plan used <code>/install-plugin github:nvk/llm-wiki</code> from his X post and referenced <code>/wiki:thesis</code>, which no longer exists in v0.3.0 (folded into <code>/wiki:research --mode thesis</code>).</p>
+      <div class="resolution">Resolution: Plan pins llm-wiki v0.3.0 explicitly. Phase 0 Step 0.1 instructs the maintainer to verify the current install command against the README, with marketplace-install as the likely path and manual-sync as fallback. <code>/wiki:thesis</code> is explicitly forbidden.</div>
+    </div>
+  </section>
+
+  <!-- DOCUMENT INDEX -->
+  <section>
+    <h2>Document Index — What Gets Written</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>File</th>
+          <th>Type</th>
+          <th>Primary Source URL</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>/bips/bip-360.md</code></td>
+          <td>BIP</td>
+          <td>github.com/bitcoin/bips bip-0360.mediawiki</td>
+        </tr>
+        <tr>
+          <td><code>/bips/bip-361.md</code></td>
+          <td>BIP</td>
+          <td>github.com/bitcoin/bips bip-0361.mediawiki</td>
+        </tr>
+        <tr>
+          <td><code>/papers/google-march-2026.md</code></td>
+          <td>Academic</td>
+          <td>arxiv.org/abs/2603.28846</td>
+        </tr>
+        <tr>
+          <td><code>/papers/presidio-april-2026.md</code></td>
+          <td>Industry</td>
+          <td>github.com/presidiobtc/bitcoin-quantum</td>
+        </tr>
+        <tr>
+          <td><code>/papers/starkware-qsb.md</code></td>
+          <td>Research</td>
+          <td>Levy paper / Starkware GitHub — pinned in Phase 0</td>
+        </tr>
+        <tr>
+          <td><code>/papers/chaincode-post-quantum.md</code></td>
+          <td>Academic</td>
+          <td>chaincode.com/bitcoin-post-quantum.pdf</td>
+        </tr>
+        <tr>
+          <td><code>/papers/blockstream-quantum.md</code></td>
+          <td>Industry</td>
+          <td>blockstream.com/quantum/</td>
+        </tr>
+        <tr>
+          <td><code>/explainers/threat-plain-language.md</code></td>
+          <td>Explainer</td>
+          <td>Synthesis — all of the above</td>
+        </tr>
+        <tr>
+          <td><code>/explainers/address-exposure.md</code></td>
+          <td>Explainer</td>
+          <td>Blockstream, Google 2026 paper</td>
+        </tr>
+        <tr>
+          <td><code>thesis.md</code></td>
+          <td>Editorial</td>
+          <td>All primary sources — section 5 by maintainer</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="phase-note" style="margin-top: 16px;">ECDLP challenges paper (arxiv.org/abs/2508.14011) is a supporting reference cited within thesis.md section 2. It does not receive a standalone artifact.</div>
+  </section>
+
+  <!-- CHANGELOG -->
+  <section>
+    <h2>Changelog</h2>
+
+    <div class="changelog">
+      <strong>v1.1 — 2026-04-18</strong>
+      <ul>
+        <li>Plan version stamp added; agent instructed to work from this version only</li>
+        <li>llm-wiki version pinned to v0.3.0; install commands updated; <code>/wiki:thesis</code> forbidden (use <code>/wiki:research --mode thesis</code>)</li>
+        <li>Phase 0 Step 0.3: URL pre-flight gate — every ingest URL must return 200 before execution</li>
+        <li>Phase 0 Step 0.6: three concrete wiki test queries with expected primary sources</li>
+        <li>Medium blog removed as hardware-timeline.json source; attack threshold reframed with lower bound + Google 2026 physical estimate, upper bound not pinned</li>
+        <li>IBM Condor (2023) added to hardware-timeline.json for trajectory density</li>
+        <li>Starkware QSB: primary source to be pinned in Phase 0; news.bitcoin.com downgraded to framing-only</li>
+        <li>arxiv 2508.14011 labelled as ECDLP challenges paper, supporting reference only</li>
+        <li>Rule 7: 2026-06-01 deadline added as independent launch trigger if Strategy outcome delayed</li>
+        <li>Phase 7 retitled "Post Checkpoint — Public Launch" to reflect deadline-triggered launch option</li>
+        <li>Phase 2 / Phase 3: explicit quality checks added for maintainer review</li>
+        <li>Phase 5: note about Jekyll minimal theme limitations for per-term tooltips</li>
+        <li>Devil's Advocate section extended with Points 6–11 covering all v1.1 resolutions</li>
+      </ul>
+    </div>
+
+    <div class="changelog" style="margin-top: 10px;">
+      <strong>v1.0 — original dispatch</strong>
+      <ul>
+        <li>Two-repo firewall architecture</li>
+        <li>Phase 0 / Phase 1+ human-agent gate</li>
+        <li>Section 5 editorial separation enforced throughout</li>
+        <li>hardware-timeline.json exact spec</li>
+        <li>Devil's Advocate Points 1–5</li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="closer">⚡ bitcoin quantum readiness — project plan v1.1 — bitcoin butlers — dispatch document</div>
+
+</div>
+</body>
+</html>
